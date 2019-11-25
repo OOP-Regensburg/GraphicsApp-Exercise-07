@@ -11,6 +11,8 @@ public class ShapesTest extends GraphicsApp {
     private static final int CANVAS_WIDTH = 800;
     private static final int FRAME_RATE = 60;
     private static final Color BACKGROUND_COLOR = Colors.WHITE;
+    // private Triangle triangle;
+    // private Hexagon hexagon;
 
     /*
      * Die initialize-Methode wird einmalig zum Start des Programms
@@ -30,10 +32,10 @@ public class ShapesTest extends GraphicsApp {
      */
     private void initShapes() {
         /*
-        triangle = new Triangle(250, 250, 100, 100, Color.BLACK);
-        triangle.setBorderWeight(3.0);
-        hexagon = new Hexagon(250, 250, 100, 100, Color.BLACK);
-        hexagon.setBorderWeight(3.0);
+        triangle = new Triangle(250, 250, 100, 100, Colors.BLACK);
+        triangle.setBorderWeight(3);
+        hexagon = new Hexagon(250, 250, 100, 100, Colors.BLACK);
+        hexagon.setBorderWeight(3);
         */
     }
 
