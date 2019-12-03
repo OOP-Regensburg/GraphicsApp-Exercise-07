@@ -23,6 +23,7 @@ public class LibraryApp {
         reader.close();
     }
 
+    // BufferedReader erlaubt es uns, Nutzereingaben aus der Konsole mithilfe der Methode readLine() auszulesen
     private static void initBufferedReader() {
         reader = new BufferedReader(new InputStreamReader(System.in));
     }
@@ -44,7 +45,15 @@ public class LibraryApp {
         }
     }
 
-   
+    /*
+     * Diese Methode erwartet eine Benutzereingabe (entweder "1" für Buch oder "2" für DVD)
+     * Je nach Eingabe wird die entsprechende Methode zum Eingaben der Media-Details aufgerufen
+     * Das neue Buch- bzw. DVD - Objekt wird dann am Index int indexInLibrary in dem Media Array gespeichert
+     * Falls eine falsche Zahl eingegeben wird, wird die Methode im letzten else-Block erneut rekursiv aufgerufen
+     * Falls gar keine Zahl, sondern z.B. ein String eingegeben wird, wird ein Fehler geworfen und das Programm würde abstürzen
+     * Dieser Fall wird mit Hilfe eines try-catch Blocks abgefangen. Im catch-Block wird dann ein Hinweis angezeigt und die
+     * Methode wird neu aufgerufen
+     */
     private static void readAndSaveSingleMedia(int indexInLibrary) throws IOException, NumberFormatException {
         try {
             System.out.println("Insert media type (1 = Book, 2 = DVD): ");
@@ -65,6 +74,11 @@ public class LibraryApp {
         }
     }
 
+    /*
+     * Diese Methode erwartet eine Folge von Benutzereingaben, und erzeugt dann aus den eingegebenen Werten
+     * ein neues Objekt der Klasse 'Book'. Dieses neue Objekt wird dann zurückgegeben ('returned').
+     * Auch hier werden Fehleingaben abgefangen und die Methode dann neu gestartet.
+     */
     private static Book readBookInformation() throws IOException, NumberFormatException {
         try {
             int year = readYear();
@@ -81,6 +95,10 @@ public class LibraryApp {
         }
     }
 
+    /*
+     * readDVDInformation() funktioniert genau wie readBookInformation(), nur werden andere Werte eingelesen
+     * um statdessen ein Objekt der Klasse DVD zu erstellen und zurückzugeben
+     */
     private static DVD readDVDInformation() throws IOException, NumberFormatException {
         try {
             int year = readYear();
@@ -97,6 +115,10 @@ public class LibraryApp {
         }
     }
 
+    /*
+     * Hierbei gilt es zu beachten, dass reader.readLine() immer einen String ausließt. Sollte man die Eingabe als int
+     * speichern wollen, muss dieser zuerst in den passenden Datentyp umgewandelt werden. Dies passiert mit Integer.parse(String s)
+     */
     private static int readYear() throws IOException {
         System.out.println("Year: ");
         int year = Integer.parseInt(reader.readLine());
