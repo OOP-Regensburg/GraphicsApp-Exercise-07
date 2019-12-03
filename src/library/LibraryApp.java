@@ -98,6 +98,8 @@ public class LibraryApp {
     /*
      * readDVDInformation() funktioniert genau wie readBookInformation(), nur werden andere Werte eingelesen
      * um statdessen ein Objekt der Klasse DVD zu erstellen und zurückzugeben
+     * Aufpassen bei boolean: parseBoolean(String s) ist true, falls der eingegebene String "true" ist.
+     * Sollte es irgendeine beliebige andere Eingabe sein, wird immer false zurückgegeben.
      */
     private static DVD readDVDInformation() throws IOException, NumberFormatException {
         try {
