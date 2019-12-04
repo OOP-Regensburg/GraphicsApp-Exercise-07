@@ -1,9 +1,8 @@
 package library;
 
-
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStreamReader;
+import java.util.InputMismatchException;
+import java.util.Scanner;
 
 /**
  * Created by Alexander Bazo on 16/11/15.
@@ -12,20 +11,19 @@ import java.io.InputStreamReader;
 public class LibraryApp {
     private static final int MAX_NUMBER_OF_MEDIA_IN_LIBRARY = 3;
     private static Media[] library;
-    private static BufferedReader reader;
+    private static Scanner scanner;
 
 
     public static void main(String[] args) throws IOException {
-        initBufferedReader();
+        initScanner();
         initLibrary();
         saveMedia();
         printMedia();
-        reader.close();
+        scanner.close();
     }
 
-    // BufferedReader erlaubt es uns, Nutzereingaben aus der Konsole mithilfe der Methode readLine() auszulesen
-    private static void initBufferedReader() {
-        reader = new BufferedReader(new InputStreamReader(System.in));
+    private static void initScanner() {
+        scanner = new Scanner(System.in);
     }
 
     private static void initLibrary() {
@@ -33,14 +31,14 @@ public class LibraryApp {
     }
 
     private static void saveMedia() throws IOException {
-        for(int i = 0; i < library.length; i++) {
+        for (int i = 0; i < library.length; i++) {
             readAndSaveSingleMedia(i);
         }
     }
 
     private static void printMedia() {
         System.out.println(library.length + " items stored in library: ");
-        for(int i = 0; i < library.length; i++) {
+        for (int i = 0; i < library.length; i++) {
             System.out.println(library[i]);
         }
     }
@@ -54,10 +52,10 @@ public class LibraryApp {
      * Dieser Fall wird mit Hilfe eines try-catch Blocks abgefangen. Im catch-Block wird dann ein Hinweis angezeigt und die
      * Methode wird neu aufgerufen
      */
-    private static void readAndSaveSingleMedia(int indexInLibrary) throws IOException, NumberFormatException {
+    private static void readAndSaveSingleMedia(int indexInLibrary) throws InputMismatchException {
         try {
             System.out.println("Insert media type (1 = Book, 2 = DVD): ");
-            int mediaType = Integer.parseInt(reader.readLine());
+            int mediaType = scanner.nextInt();
             if (mediaType == 1) {
                 Book book = readBookInformation();
                 library[indexInLibrary] = book;
@@ -68,7 +66,8 @@ public class LibraryApp {
                 System.out.println("Error, please enter correct media type.");
                 readAndSaveSingleMedia(indexInLibrary);
             }
-        } catch (NumberFormatException e) {
+        } catch (InputMismatchException e) {
+            resetScanner();
             System.out.println("Error, please enter correct media type.");
             readAndSaveSingleMedia(indexInLibrary);
         }
@@ -79,17 +78,19 @@ public class LibraryApp {
      * ein neues Objekt der Klasse 'Book'. Dieses neue Objekt wird dann zurückgegeben ('returned').
      * Auch hier werden Fehleingaben abgefangen und die Methode dann neu gestartet.
      */
-    private static Book readBookInformation() throws IOException, NumberFormatException {
+    private static Book readBookInformation() throws InputMismatchException {
         try {
             int year = readYear();
             String title = readTitle();
             System.out.println("Author: ");
-            String author = reader.readLine();
+            String author = scanner.nextLine();
             System.out.println("Number of pages: ");
-            int numberOfPages = Integer.parseInt(reader.readLine());
+            int numberOfPages = scanner.nextInt();
+            resetScanner();
             Book book = new Book(year, title, author, numberOfPages);
             return book;
-        } catch (NumberFormatException e) {
+        } catch (InputMismatchException e) {
+            resetScanner();
             System.out.println("Unexpected Input. Please try again.");
             return readBookInformation();
         }
@@ -98,39 +99,46 @@ public class LibraryApp {
     /*
      * readDVDInformation() funktioniert genau wie readBookInformation(), nur werden andere Werte eingelesen
      * um statdessen ein Objekt der Klasse DVD zu erstellen und zurückzugeben
-     * Aufpassen bei boolean: parseBoolean(String s) ist true, falls der eingegebene String "true" ist.
-     * Sollte es irgendeine beliebige andere Eingabe sein, wird immer false zurückgegeben.
      */
-    private static DVD readDVDInformation() throws IOException, NumberFormatException {
+    private static DVD readDVDInformation() throws InputMismatchException {
         try {
             int year = readYear();
             String title = readTitle();
             System.out.println("Runtime (minutes): ");
-            int runtimeInMinutes = Integer.parseInt(reader.readLine());
+            int runtimeInMinutes = scanner.nextInt();
+            resetScanner();
             System.out.println("Bonus material included (true/false): ");
-            boolean hasBonusMaterial = Boolean.parseBoolean(reader.readLine());
+            boolean hasBonusMaterial = scanner.nextBoolean();
+            resetScanner();
             DVD dvd = new DVD(year, title, runtimeInMinutes, hasBonusMaterial);
             return dvd;
-        } catch (NumberFormatException e) {
+        } catch (InputMismatchException e) {
+            resetScanner();
             System.out.println("Unexpected Input. Please try again.");
             return readDVDInformation();
         }
     }
 
-    /*
-     * Hierbei gilt es zu beachten, dass reader.readLine() immer einen String ausließt. Sollte man die Eingabe als int
-     * speichern wollen, muss dieser zuerst in den passenden Datentyp umgewandelt werden. Dies passiert mit Integer.parse(String s)
-     */
-    private static int readYear() throws IOException {
+
+    private static int readYear() {
         System.out.println("Year: ");
-        int year = Integer.parseInt(reader.readLine());
+        int year = scanner.nextInt();
+        resetScanner();
         return year;
     }
 
-    private static String readTitle() throws IOException {
+    private static String readTitle() {
         System.out.println("Title: ");
-        String title = reader.readLine();
+        String title = scanner.nextLine();
         return title;
+    }
+
+    /*
+     * resetScanner() positioniert den Scanner wieder am Anfang der nächsten Zeile. Dies ist nötig, da beim auslesen
+     * von primitiven Datentypen wie z.B. bei nextInt() nicht in die nächste Zeile weitergerückt wird
+     */
+    private static void resetScanner() {
+        scanner.nextLine();
     }
 
 
